@@ -18,11 +18,11 @@ class BSTree(object):
         else:
             if node.key == key:
                 node.value = value
-                return node
             elif key < node.key:
-                return self.insert__( node.left, key, value )
+                node.left = self.insert__( node.left, key, value )
             else:
-                return self.insert__( node.right, key, value )
+                node.right = self.insert__( node.right, key, value )
+        return node
     
     def __getitem__ ( self, key ):
         root = self.root
@@ -36,4 +36,53 @@ class BSTree(object):
         return None
     
     def delete( self, key ):
-        return
+        self.root = self.delete__( self.root, key )
+        
+    def delete__( self, node, key ):
+        if key == node.key:
+            if node.left == None:
+                return node.right
+            elif node.right == None:
+                return node.left
+            else:
+                temp = self.findMin( node.right )
+                node.key = temp.key
+                node.value = temp.value
+                node.right = self.delete__( node.right, temp.key )
+        elif key < node.key:
+            node.left = self.delete__( node.left, key )
+        else:
+            node.right = self.delete__( node.right, key )
+        return node
+                
+        
+        
+    def findMin( self, node ):
+        if node.left != None:
+            return self.findMin( node.left )
+        else:
+            return node
+            
+def Traversal( root, deep ):
+    if root.right != None:
+        Traversal( root.right, deep + 1 )
+    for i in range(deep):
+        print("\t", end = " ")
+    print(root.key)
+    if root.left != None:
+        Traversal( root.left, deep + 1 )
+
+X = BSTree()
+X[1] = 1
+X[2] = 2
+X[0] = 0
+X[3] = 3
+X[1.5] = 1.5
+X[1.55] = 1.55
+Traversal( X.root, 0 )
+print("")
+print("")
+print("")
+print("")
+X.delete( 2 )
+Traversal( X.root, 0 )
